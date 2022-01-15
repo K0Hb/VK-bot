@@ -9,14 +9,22 @@ connection = pymysql.connect(host=host, user=user, password=password, database=d
                                  cursorclass=pymysql.cursors.DictCursor)
 
 
-def connect_to_database( connection=connection):
+def get_category( connection=connection):
     with connection.cursor() as cursor:
         connection.ping()
         cursor.execute(f"SELECT * FROM category")
-        # cursor.execute("SELECT VERSION()")
         result = cursor.fetchall()
         connection.commit()
         connection.close()
     return result
 
-print(connect_to_database())
+def get_goods( category, connection=connection):
+    with connection.cursor() as cursor:
+        connection.ping()
+        cursor.execute(f"SELECT * FROM goods WHERE category_id = {category}")
+        result = cursor.fetchall()
+        connection.commit()
+        connection.close()
+    return result
+
+# print(get_goods(1))
