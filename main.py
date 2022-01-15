@@ -26,7 +26,7 @@ def generate_keyboard(table_name, type, butt_back = False):
         keyboard.add_callback_button(
             label=object['name'],
             color=VkKeyboardColor.POSITIVE ,
-            payload={"type": type},
+            payload={"type": type, 'photo': object.get('photo')},
         )
     if butt_back:
         keyboard.add_callback_button(
@@ -43,7 +43,7 @@ def start_page(event, vk, message_id=None, new_event=False):
             peer_id=event.obj.peer_id,
             message="Добро пожаловать !",
             conversation_message_id=event.obj.conversation_message_id,
-            keyboard=generate_keyboard('category', 'go_goods',).get_keyboard(),
+            keyboard=generate_keyboard('category', 'go_goods').get_keyboard(),
             attachment=f'photo-{GROUP_ID}_457239027'
         )
     else:
@@ -56,37 +56,38 @@ def start_page(event, vk, message_id=None, new_event=False):
             attachment=f'photo-{GROUP_ID}_457239027'
         )
 
-def goods_page(event, vk, goods_page=True, photo=False):
+def goods_page(event, vk, photo=False):
     if photo:
-            vk.messages.send(
+            photo= event.obj['payload']['photo']
+            vk.messages.edit(
             peer_id=event.obj.peer_id,
             message="товары",
             conversation_message_id=event.obj.conversation_message_id,
-            attachment='photo-210104217_457239025',
             keyboard=(generate_keyboard('goods', 'get_photo', butt_back=True)).get_keyboard(),
+            attachment=f'photo-{GROUP_ID}_{photo}'
         )
-    else: vk.messages.edit(
+    else: 
+            photo = event.obj['payload']['photo']
+            vk.messages.edit(
             peer_id=event.obj.peer_id,
             message="товары",
             conversation_message_id=event.obj.conversation_message_id,
             keyboard=(generate_keyboard('goods', 'get_photo', butt_back=True)).get_keyboard(),
+            attachment=f'photo-{GROUP_ID}_{photo}'
         )
 
 
 def main():
-    # Запускаем бот
     vk_session = VkApi(token=GROUP_TOKEN, api_version=API_VERSION)
     vk = vk_session.get_api()
     longpoll = VkBotLongPoll(vk_session, group_id=GROUP_ID)
 
-    # message_id = None
 
     for event in longpoll.listen():
         if event.type == VkBotEventType.MESSAGE_NEW:
             if event.obj.message["text"] != "":
                 if event.from_user:
                     start_page(event, vk)
-                    # message_id = event.obj.message["id"]
         elif event.type == VkBotEventType.MESSAGE_EVENT:
             if event.object.payload.get("type") in ['back']:
                 start_page(event, vk, new_event=True)
