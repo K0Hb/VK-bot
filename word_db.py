@@ -27,4 +27,13 @@ def get_goods( category, connection=connection):
         connection.close()
     return result
 
+def get_price_good(name ,connection=connection):
+    with connection.cursor() as cursor:
+        connection.ping()
+        cursor.execute(f"SELECT * FROM goods WHERE category_id = {name}")
+        result = cursor.fetchall()
+        connection.commit()
+        connection.close()
+    return result
+
 # print(get_goods(1))
