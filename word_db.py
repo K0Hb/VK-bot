@@ -9,7 +9,7 @@ connection = pymysql.connect(host=host, user=user, password=password, database=d
                                  cursorclass=pymysql.cursors.DictCursor)
 
 
-def get_category( connection=connection):
+def get_category(*args, connection=connection):
     with connection.cursor() as cursor:
         connection.ping()
         cursor.execute(f"SELECT * FROM category")
@@ -21,7 +21,7 @@ def get_category( connection=connection):
 def get_goods( category, connection=connection):
     with connection.cursor() as cursor:
         connection.ping()
-        cursor.execute(f"SELECT * FROM goods WHERE category_id = {category}")
+        cursor.execute(f"SELECT * FROM goods JOIN category ON category.id = goods.category_id WHERE category.name = '{category}'")
         result = cursor.fetchall()
         connection.commit()
         connection.close()
@@ -30,10 +30,10 @@ def get_goods( category, connection=connection):
 def get_price_good(name ,connection=connection):
     with connection.cursor() as cursor:
         connection.ping()
-        cursor.execute(f"SELECT * FROM goods WHERE category_id = {name}")
+        cursor.execute(f"SELECT * FROM goods WHERE name = '{name}'")
         result = cursor.fetchall()
         connection.commit()
         connection.close()
     return result
 
-# print(get_goods(1))
+print(get_goods('category1'))
