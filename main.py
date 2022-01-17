@@ -14,29 +14,10 @@ GROUP_TOKEN = os.getenv('SECRET_KEY')
 API_VERSION = '5.131'
 DB_MYSCL = {'admin': 22081991, 'data_base': 'VK_BOT'}
 
-# but_name = None
-# but_photo = None
-# last_name = None
-# last_photo = None
 
-def get_lol(*arqs):
-    return [{'name' : 'Выбор категорий'}]
-
-def generate_keyboard(table_name, type, butt_back = False, name=None, photo=None):
+def generate_keyboard(get_db_info, type, butt_back = False, name=None, photo=None):
     keyboard = VkKeyboard(one_time=False, inline=True)
-
-    def request_db(table_name):
-        db = {
-            'category' : 'get_category',
-            'goods' : 'get_goods',
-            'start_page' : 'get_lol',
-            'good' : 'get_price_good',
-        }
-        func = globals()[db[table_name]]
-        result = func(name)
-        return result
-    table = request_db(table_name)
-    for item in table:
+    for item in get_db_info:
         keyboard.add_callback_button(
             label=item['name'],
             color=VkKeyboardColor.POSITIVE ,
@@ -57,7 +38,7 @@ def start_page_send(event, vk, name=None):
         user_id=event.obj.message["from_id"],
         random_id=get_random_id(),
         peer_id=event.obj.message["from_id"],
-        keyboard=generate_keyboard('start_page', 'category_page',).get_keyboard(),
+        keyboard=generate_keyboard([{'name' : 'Выбор категорий'}], 'category_page',).get_keyboard(),
         message="Добро пожаловать !",
         attachment=f'photo-{GROUP_ID}_{photo}'
     )
@@ -68,49 +49,44 @@ def start_page_edit(event, vk, name=None):
         conversation_message_id=event.obj.conversation_message_id,
         random_id=get_random_id(),
         peer_id=event.obj.peer_id,
-        keyboard=generate_keyboard('start_page', 'category_page',).get_keyboard(),
+        keyboard=generate_keyboard([{'name' : 'Выбор категорий'}], 'category_page',).get_keyboard(),
         message="Добро пожаловать !",
         attachment=f'photo-{GROUP_ID}_{photo}'
     )
 
-def goods_page(event, vk, name=None, last_photo=None):
+def goods_page(event, vk, name=None):
     photo = event.obj['payload'].get('photo')
+    get_db_info = get_goods(name)
     vk.messages.edit(
         peer_id=event.obj.peer_id,
         message="Выбор товаров",
         conversation_message_id=event.obj.conversation_message_id,
-        keyboard=(generate_keyboard('goods', 'good_page', butt_back=True, name=name, photo=photo)).get_keyboard(),
+        keyboard=(generate_keyboard(get_db_info, 'good_page', butt_back=True, name=name, photo=photo)).get_keyboard(),
         attachment=f'photo-{GROUP_ID}_{photo}'
     )
 
 def good_page(event, vk, name=None):
     photo = event.obj['payload'].get('photo')
+    get_db_info = get_price_good(name)
     vk.messages.edit(
     peer_id=event.obj.peer_id,
-    message="Это товар",
+    message=f"Описание:  {get_db_info[0]['discription']}",
     conversation_message_id=event.obj.conversation_message_id,
-    keyboard=(generate_keyboard('good', 'good_page', butt_back=True, name=name, photo=photo)).get_keyboard(),
+    keyboard=(generate_keyboard(get_db_info, 'good_page', butt_back=True, name=name, photo=photo)).get_keyboard(),
     attachment=f'photo-{GROUP_ID}_{photo}'
     )
     
-def category_page(event, vk, name=None, last_photo=None):
+def category_page(event, vk, name=None):
     photo = '457239031'
+    get_db_info = get_category(name)
     vk.messages.edit(
         random_id=get_random_id(),
         peer_id=event.obj.peer_id,
         message="Выбор категории",
         conversation_message_id=event.obj.conversation_message_id,
-        keyboard=generate_keyboard('category', 'goods_page', name=name, photo=photo).get_keyboard(),
+        keyboard=generate_keyboard(get_db_info, 'goods_page', name=name, photo=photo).get_keyboard(),
         attachment=f'photo-{GROUP_ID}_{photo}'
     )
-
-
-states = {
-    'start_page_send': None,
-    'category_page': 'start_page_edit',
-    'goods_page': 'category_page',
-    'good_page': 'goods_page',
-    }
 
 def go_back(event, vk, state_cache):
     state_cache.pop()
