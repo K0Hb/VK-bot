@@ -1,32 +1,8 @@
-# VK-bot
-______
-VK store bot
+# VK store bot
 ______
 Витрина выпечки/кондитерской. 3-4 раздела, в каждом по 2-3 товара. У товара описание и фотография. Из раздела можно возвращаться назад. Для навигации используются кнопки.
 ______
 Данные хранятся в БД:
+![Bot gif](presentation/BD_presentation.png)
 ______
-TABLE goods
-+----+-------+-------------+----------------------+-----------+-------+
-| id | name  | category_id | discription          | photo     | price |
-+----+-------+-------------+----------------------+-----------+-------+
-|  1 | good1 |           1 | product1 description | 457239018 | 457   |
-|  2 | good2 |           2 | product2 description | 457239019 | 100   |
-|  3 | good3 |           3 | product3 description | 457239020 | 150   |
-|  4 | good4 |           1 | product4 description | 457239021 | 160   |
-|  5 | good5 |           2 | product5 description | 457239022 | 180   |
-|  6 | good6 |           3 | product6 description | 457239023 | NULL  |
-|  7 | good7 |           1 | product7 description | 457239024 | 130   |
-|  8 | good8 |           2 | product8 description | 457239025 | 155   |
-|  9 | good9 |           3 | product9 description | 457239026 | 300   |
-+----+-------+-------------+----------------------+-----------+-------+
-TABLE category
-+----+-----------+-----------+
-| id | name      | photo     |
-+----+-----------+-----------+
-|  1 | category1 | 457239028 |
-|  2 | category2 | 457239029 |
-|  3 | category3 | 457239030 |
-+----+-----------+-----------+
-______
-![Bot gif](vk-bot-gif.gif)
+![Bot gif](presentation/vk-bot-gif.gif)
