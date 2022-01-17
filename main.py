@@ -56,8 +56,10 @@ def start_page_edit(event, vk, name=None):
     )
 
 
-def goods_page(event, vk, name=None):
+def goods_page(event, vk, name=None, last_photo=None):
     photo = event.obj['payload'].get('photo')
+    if last_photo is not None:
+        photo = last_photo
     get_db_info = get_goods(name)
     vk.messages.edit(
         peer_id=event.obj.peer_id,
@@ -71,7 +73,7 @@ def goods_page(event, vk, name=None):
     )
 
 
-def good_page(event, vk, name=None):
+def good_page(event, vk, name=None, last_photo=None):
     photo = event.obj['payload'].get('photo')
     get_db_info = get_price_good(name)
     vk.messages.edit(
@@ -86,7 +88,7 @@ def good_page(event, vk, name=None):
     )
 
 
-def category_page(event, vk, name=None):
+def category_page(event, vk, name=None, last_photo=None):
     photo = '457239031'
     get_db_info = get_category(name)
     vk.messages.edit(
@@ -106,9 +108,10 @@ def go_back(event, vk, state_cache):
     condition = state_cache[-1]
     page_view = condition['page_view']
     but_name = condition['but_name']
+    last_photo = condition['but_photo']
     func = globals()[page_view]
     print(f'Start back view {condition}')
-    func(event, vk, but_name)
+    func(event, vk, but_name, last_photo)
 
 
 def chagne_status(state_cache, event):
