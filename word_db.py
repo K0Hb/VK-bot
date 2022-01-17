@@ -1,11 +1,15 @@
 import pymysql
+import os
+from dotenv import load_dotenv
 
-host = 'localhost'
-user = 'root'
-password = '22081991'
-db_name = 'VK_BOT'
 
-connection = pymysql.connect(host=host, user=user, password=password, database=db_name,
+load_dotenv()
+HOST = os.getenv('HOST')
+USER_DB = os.getenv('USER_DB')
+PASSWORD = os.getenv('PASSWORD')
+DB_NAME = os.getenv('DB_NAME')
+
+connection = pymysql.connect(host=HOST, user=USER_DB, password=PASSWORD, database=DB_NAME,
                                  cursorclass=pymysql.cursors.DictCursor)
 
 
@@ -35,5 +39,3 @@ def get_price_good(name ,connection=connection):
         connection.commit()
         connection.close()
     return result
-
-# print(get_goods('category1'))

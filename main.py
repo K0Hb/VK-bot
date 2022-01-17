@@ -1,17 +1,17 @@
-from email import message
+
 from vk_api import VkApi
 from vk_api.utils import get_random_id
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
-import os, vk_api, json
+import os
 from dotenv import load_dotenv
 from word_db import get_category, get_goods, get_price_good
 
 
 load_dotenv()
-GROUP_ID = '210104217'
+GROUP_ID = os.getenv('GROUP_ID')
 GROUP_TOKEN = os.getenv('SECRET_KEY')
-API_VERSION = '5.131'
+API_VERSION = os.getenv('API_VERSION')
 DB_MYSCL = {'admin': 22081991, 'data_base': 'VK_BOT'}
 
 
