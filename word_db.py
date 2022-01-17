@@ -36,4 +36,4 @@ def get_price_good(name ,connection=connection):
         connection.close()
     return result
 
-print(get_goods('category1'))
+# print(get_goods('category1'))
