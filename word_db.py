@@ -46,3 +46,12 @@ def get_price_good(name, connection=connection):
         connection.commit()
         connection.close()
     return result
+
+def get_category_photo(category_name, connection=connection):
+    with connection.cursor() as cursor:
+        connection.ping()
+        cursor.execute(f"SELECT photo FROM category WHERE name = '{category_name}'")
+        result = cursor.fetchall()
+        connection.commit()
+        connection.close()
+    return result
