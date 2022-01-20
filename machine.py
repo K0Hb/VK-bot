@@ -21,7 +21,8 @@ class СonditionMachine():
             'page_butt_name': self.page_butt_name,
             'page_back_condition': self.page_back_condition,
             'level_page':  self.level_page,
-            'state_stack': self.state_stack
+            'state_stack': self.state_stack,
+            'discription': self.page_discription
         }
         return context
 
@@ -29,6 +30,7 @@ class СonditionMachine():
         self.actual_page = 'start_page'
         self.page_photo = '457239027'
         self.page_butt_name = ['Выбор категорий']
+        self.page_discription = None
         self.level_page = 1
         self.state_stack.append(self.actual_page)
 
@@ -36,6 +38,7 @@ class СonditionMachine():
         self.page_butt_name = [category['name'] for category in get_category()]
         self.page_photo = '457239031'
         self.page_back_condition = self.actual_page
+        self.page_discription = None
         self.actual_page = 'category_page'
         self.level_page = 2
         self.state_stack.append(self.actual_page)
@@ -45,6 +48,7 @@ class СonditionMachine():
             [good['name'] for good in get_goods(category_name)]
         self.page_photo = get_category_photo(category_name)
         self.page_back_condition = self.actual_page
+        self.page_discription = None
         self.actual_page = category_name
         self.level_page = 3
         self.state_stack.append(self.actual_page)

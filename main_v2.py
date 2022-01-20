@@ -46,6 +46,9 @@ def page_view(event, vk, condition, butt_back=False):
     if len(condition['state_stack']) > 1:
         butt_back = True
     photo = condition['page_photo']
+    discription = 'Бот-пекарня'
+    if condition['discription'] is not None:
+        discription = condition['discription']
     vk.messages.send(
         user_id=event.obj.message["from_id"],
         random_id=get_random_id(),
@@ -53,7 +56,7 @@ def page_view(event, vk, condition, butt_back=False):
         keyboard=generate_keyboard(condition['page_butt_name'],
                                    butt_back).get_keyboard(),
         attachment=f'photo-{GROUP_ID}_{photo}',
-        message='Бот-пекарня'
+        message=discription
     )
 
 
