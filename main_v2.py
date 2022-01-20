@@ -1,13 +1,11 @@
-from tempfile import template
-from vkbottle.bot import Bot, Message
-from vkbottle import Keyboard, KeyboardButtonColor, Text, OpenLink, Location, EMPTY_KEYBOARD, template_gen, TemplateElement, GroupEventType, Callback, GroupTypes
-from vkbottle.modules import json
-from vkbottle import BaseStateGroup
+from vk_api import VkApi
 from vk_api.utils import get_random_id
+from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
+from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 import os
 from dotenv import load_dotenv
-import asyncio
-from word_db import get_category, get_goods, get_price_good, get_category_photo
+from machine import СonditionMachine
+from request_db import get_all_name
 
 load_dotenv()
 GROUP_ID = os.getenv('GROUP_ID')
@@ -15,42 +13,67 @@ GROUP_TOKEN = os.getenv('SECRET_KEY')
 API_VERSION = os.getenv('API_VERSION')
 
 
-bot = Bot(token=GROUP_TOKEN)
-
-@bot.on.message(text="start")
-async def handler(message: Message):
-    message_id = message.object.
-	keyboard = (
-		Keyboard(one_time=True)
-		.add(Callback("Начнем!", {"cmd": "click", 'message_id': 'None'}))
-	)
-
-	await message.answer(message="Добро пожаловать", keyboard=keyboard)
-
-@bot.on.raw_event(GroupEventType.MESSAGE_EVENT, dataclass=GroupTypes.MessageEvent)
-async def message_event_handler(event: GroupTypes.MessageEvent):
-    keyboard1 = (Keyboard(one_time=True)
-		.add(Callback("category1", {"cmd": "click1"}))
-        .add(Callback("category2", {"cmd": "click2"}))
-        .add(Callback("category3", {"cmd": "click3"}))
+def generate_keyboard(get_db_info, butt_back=False):
+    keyboard = VkKeyboard(one_time=False, inline=True)
+    for item in get_db_info:
+        keyboard.add_button(
+            label=item,
+            color=VkKeyboardColor.POSITIVE,
+            payload={"type": 'click'}
         )
-    await event.ctx_api.messages.edit(
-        peer_id=event.object.peer_id,
-        keyboard=keyboard1,
-        message='Выбери категорию',
-        message_id=0,
-        conversation_message_id=0,
+    if butt_back:
+        keyboard.add_button(
+            "Back",
+            color=VkKeyboardColor.NEGATIVE,
+            payload={"type": "back"},
+        )
+    return keyboard
+
+def start_page_send(event, vk, condition):
+    photo = condition['page_photo']
+    vk.messages.send(
+        user_id=event.obj.message["from_id"],
+        random_id=get_random_id(),
+        peer_id=event.obj.message["from_id"],
+        keyboard=generate_keyboard(['Выбор категорий']).get_keyboard(),
+        attachment=f'photo-{GROUP_ID}_{photo}',
+        message="Добро пожаловать !",
     )
 
-# @bot.on.message(text="Добро пожаловать")
-# async def handler(message: Message):
-# 	keyboard = (
-# 		Keyboard(one_time=True)
-# 		.add(Callback("Начнем!", {"cmd": "click", 'message_id': 'None'}))
-# 	)
 
-# 	await message.answer(message="Добро пожаловать", keyboard=keyboard)
+def page_view(event, vk, condition, butt_back=False):
+    if len(condition['state_stack']) > 1:
+        butt_back = True
+    photo = condition['page_photo']
+    vk.messages.send(
+        user_id=event.obj.message["from_id"],
+        random_id=get_random_id(),
+        peer_id=event.obj.message["from_id"],
+        keyboard=generate_keyboard(condition['page_butt_name'], butt_back).get_keyboard(),
+        attachment=f'photo-{GROUP_ID}_{photo}',
+        message = 'Бот-пекарня'
+    )
 
+def main():
+    vk_session = VkApi(token=GROUP_TOKEN, api_version=API_VERSION)
+    vk = vk_session.get_api()
+    longpoll = VkBotLongPoll(vk_session, group_id=GROUP_ID)
+    user = СonditionMachine()
+    all_valid_name = get_all_name() + ['Back', 'Выбор категорий']
+    for event in longpoll.listen():
+        if event.type == VkBotEventType.MESSAGE_NEW:
+            message = event.obj.message["text"]
+            if message == "start":
+                user.state_stack = []
+                user.user_id = event.obj.message['from_id']
+                condition = user.get_page_view('start')
+                print(condition)
+                start_page_send(event, vk, condition)
+            elif message in all_valid_name:
+                condition = user.get_page_view(message)
+                print(condition)
+                page_view(event, vk, condition)
 
-print('bot run')
-bot.run_forever()
+if __name__ == "__main__":
+    print('Bot run')
+    main()

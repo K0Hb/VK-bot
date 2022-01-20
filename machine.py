@@ -1,4 +1,4 @@
-from word_db import get_category, get_goods, get_price_good, get_category_photo
+from request_db import get_category, get_goods, get_price_good, get_category_photo
 
 
 class СonditionMachine():

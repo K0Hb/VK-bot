@@ -4,7 +4,7 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 import os
 from dotenv import load_dotenv
-from word_db import get_category, get_goods, get_price_good
+from request_db import get_category, get_goods, get_price_good
 
 load_dotenv()
 GROUP_ID = os.getenv('GROUP_ID')
