@@ -1,5 +1,6 @@
 from word_db import get_category, get_goods, get_price_good, get_category_photo
 
+
 class СonditionMachine():
 
     def __init__(self):
@@ -46,12 +47,16 @@ class СonditionMachine():
         self.page_back_condition = self.actual_page
         self.page_discription = good['discription']
         self.actual_page = good_name
+        self.level_page = 4
 
     def go_back(self):
-        self.level_page = self.level_page - 1
+        self.level_page = self.level_page - 2
 
     def get_page_view(self, status):
-        if self.level_page == None:
+        if status == 'Back':
+            self.go_back()
+            self.get_page_view(self.page_back_condition)
+        elif self.level_page == None:
             self.start_page()
         elif self.level_page == 1:
             self.categories_page()
@@ -73,9 +78,10 @@ print('-'*50)
 lol.get_page_view('good1')
 print(lol.get_context())
 print('-'*50)
-lol.go_back()
-print(lol.level_page)
-lol.get_page_view('category1')
+lol.get_page_view('Back')
+print(lol.get_context())
+print('-'*50)
+lol.get_page_view('Back')
 print(lol.get_context())
 print('-'*50)
 
