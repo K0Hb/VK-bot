@@ -1,4 +1,5 @@
-from request_db import get_category, get_goods, get_info_good, get_category_photo
+from request_db import get_category, get_goods,\
+    get_info_good, get_category_photo
 
 
 class СonditionMachine():
@@ -27,7 +28,7 @@ class СonditionMachine():
     def start_page(self):
         self.actual_page = 'start_page'
         self.page_photo = '457239027'
-        self.page_butt_name = ['Выбор категорий',]
+        self.page_butt_name = ['Выбор категорий']
         self.level_page = 1
         self.state_stack.append(self.actual_page)
 
@@ -35,12 +36,13 @@ class СonditionMachine():
         self.page_butt_name = [category['name'] for category in get_category()]
         self.page_photo = '457239031'
         self.page_back_condition = self.actual_page
-        self.actual_page = 'category_page' #fix me
+        self.actual_page = 'category_page'
         self.level_page = 2
         self.state_stack.append(self.actual_page)
 
     def goods_page(self, category_name):
-        self.page_butt_name = [good['name'] for good in get_goods(category_name)]
+        self.page_butt_name =\
+            [good['name'] for good in get_goods(category_name)]
         self.page_photo = get_category_photo(category_name)
         self.page_back_condition = self.actual_page
         self.actual_page = category_name
@@ -79,12 +81,3 @@ class СonditionMachine():
             print('start good_page')
             self.good_page(status)
         return self.get_context()
-
-scanery = ({'start_page': ({'category_page': ({'category1':
-                                                   ({'good1': None}, {'good2': None}, {'good3': None})},
-                                              {'category2':
-                                                   ({'good4': None}, {'good5': None}, {'good6': None})},
-                                              {'category3':
-                                                   ({'good7': None}, {'good8': None}, {'good9': None})})
-                            })
-            })

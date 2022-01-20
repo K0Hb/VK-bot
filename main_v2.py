@@ -29,6 +29,7 @@ def generate_keyboard(get_db_info, butt_back=False):
         )
     return keyboard
 
+
 def start_page_send(event, vk, condition):
     photo = condition['page_photo']
     vk.messages.send(
@@ -49,10 +50,12 @@ def page_view(event, vk, condition, butt_back=False):
         user_id=event.obj.message["from_id"],
         random_id=get_random_id(),
         peer_id=event.obj.message["from_id"],
-        keyboard=generate_keyboard(condition['page_butt_name'], butt_back).get_keyboard(),
+        keyboard=generate_keyboard(condition['page_butt_name'],
+                                   butt_back).get_keyboard(),
         attachment=f'photo-{GROUP_ID}_{photo}',
-        message = 'Бот-пекарня'
+        message='Бот-пекарня'
     )
+
 
 def main():
     vk_session = VkApi(token=GROUP_TOKEN, api_version=API_VERSION)
@@ -67,12 +70,11 @@ def main():
                 user.state_stack = []
                 user.user_id = event.obj.message['from_id']
                 condition = user.get_page_view('start')
-                print(condition)
                 start_page_send(event, vk, condition)
             elif message in all_valid_name:
                 condition = user.get_page_view(message)
-                print(condition)
                 page_view(event, vk, condition)
+
 
 if __name__ == "__main__":
     print('Bot run')

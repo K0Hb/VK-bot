@@ -47,14 +47,17 @@ def get_info_good(name, connection=connection):
         connection.close()
     return result[0]
 
+
 def get_category_photo(category_name, connection=connection):
     with connection.cursor() as cursor:
         connection.ping()
-        cursor.execute(f"SELECT photo FROM category WHERE name = '{category_name}'")
+        cursor.execute(
+            f"SELECT photo FROM category WHERE name = '{category_name}'")
         result = cursor.fetchall()
         connection.commit()
         connection.close()
     return result[0]['photo']
+
 
 def get_all_name(connection=connection):
     with connection.cursor() as cursor:
