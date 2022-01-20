@@ -10,6 +10,7 @@ class СonditionMachine():
         self.page_back_condition = None
         self.page_discription = None
         self.level_page = None
+        self.user_id = None
 
     def get_context(self):
         context = {
@@ -23,13 +24,13 @@ class СonditionMachine():
 
     def start_page(self):
         self.actual_page = 'start_page'
-        self.page_photo = 'photo-210104217_457239027'
+        self.page_photo = '457239027'
         self.page_butt_name = ['Выбор категорий',]
         self.level_page = 1
 
     def categories_page(self):
         self.page_butt_name = [category['name'] for category in get_category()]
-        self.page_photo = 'photo-210104217_457239031'
+        self.page_photo = '457239031'
         self.page_back_condition = self.actual_page
         self.actual_page = 'category_page' #fix me
         self.level_page = 2
@@ -64,26 +65,27 @@ class СonditionMachine():
             self.goods_page(status)
         elif self.level_page == 3:
             self.good_page(status)
+        return self.get_context()
 
-lol = СonditionMachine()
-lol.get_page_view('start')
-print(lol.get_context())
-print('-'*50)
-lol.get_page_view('categories_page')
-print(lol.get_context())
-print('-'*50)
-lol.get_page_view('category1')
-print(lol.get_context())
-print('-'*50)
-lol.get_page_view('good1')
-print(lol.get_context())
-print('-'*50)
-lol.get_page_view('Back')
-print(lol.get_context())
-print('-'*50)
-lol.get_page_view('Back')
-print(lol.get_context())
-print('-'*50)
+# lol = СonditionMachine()
+# lol.get_page_view('start')
+# print(lol.get_context())
+# print('-'*50)
+# lol.get_page_view('categories_page')
+# print(lol.get_context())
+# print('-'*50)
+# lol.get_page_view('category1')
+# print(lol.get_context())
+# print('-'*50)
+# lol.get_page_view('good1')
+# print(lol.get_context())
+# print('-'*50)
+# lol.get_page_view('Back')
+# print(lol.get_context())
+# print('-'*50)
+# lol.get_page_view('Back')
+# print(lol.get_context())
+# print('-'*50)
 
 scanery = ({'start_page': ({'category_page': ({'category1':
                                                    ({'good1': None}, {'good2': None}, {'good3': None})},
