@@ -54,4 +54,4 @@ def get_category_photo(category_name, connection=connection):
         result = cursor.fetchall()
         connection.commit()
         connection.close()
-    return result
+    return result[0]['photo']
