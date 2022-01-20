@@ -1,3 +1,4 @@
+import pytest
 from machine import СonditionMachine
 from request_db import get_all_name, get_category_photo, get_info_good
 
