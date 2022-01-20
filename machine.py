@@ -57,20 +57,21 @@ class СonditionMachine():
         self.state_stack.append(self.actual_page)
 
     def go_back(self):
-        self.level_page = self.level_page - 2
+        self.state_stack.pop()
+        page_back = self.state_stack.pop()
+        self.get_page_view(page_back)
 
-    def get_page_view(self, status):
+    def get_page_view(self, status, back=False):
+        level_page = len(self.state_stack)
         if status == 'Back':
             self.go_back()
-            self.actual_page = self.state_stack[-1]
-            self.get_page_view(self.state_stack.pop())
-        elif self.level_page == None:
+        elif level_page == 0:
             self.start_page()
-        elif self.level_page == 1:
+        elif level_page == 1:
             self.categories_page()
-        elif self.level_page == 2:
+        elif level_page == 2:
             self.goods_page(status)
-        elif self.level_page == 3:
+        elif level_page == 3:
             self.good_page(status)
         return self.get_context()
 
