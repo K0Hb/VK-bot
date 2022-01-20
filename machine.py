@@ -1,4 +1,4 @@
-from request_db import get_category, get_goods, get_price_good, get_category_photo
+from request_db import get_category, get_goods, get_info_good, get_category_photo
 
 
 class СonditionMachine():
@@ -49,7 +49,7 @@ class СonditionMachine():
 
     def good_page(self, good_name):
         self.page_butt_name = []
-        good = get_price_good(good_name)[0]
+        good = get_info_good(good_name)
         self.page_photo = good['photo']
         self.page_back_condition = self.actual_page
         self.page_discription = good['discription']
@@ -62,7 +62,7 @@ class СonditionMachine():
         page_back = self.state_stack.pop()
         self.get_page_view(page_back)
 
-    def get_page_view(self, status, back=False):
+    def get_page_view(self, status):
         level_page = len(self.state_stack)
         if status == 'Back':
             self.go_back()
@@ -79,26 +79,6 @@ class СonditionMachine():
             print('start good_page')
             self.good_page(status)
         return self.get_context()
-
-# lol = СonditionMachine()
-# lol.get_page_view('start')
-# print('Go to start', lol.get_context())
-# print('-'*50)
-# lol.get_page_view('categories_page')
-# print('Go to categories_page', lol.get_context())
-# print('-'*50)
-# lol.get_page_view('category1')
-# print('Go to category1', lol.get_context())
-# print('-'*50)
-# lol.get_page_view('good1')
-# print('Go to good1', lol.get_context())
-# print('-'*50)
-# lol.get_page_view('Back')
-# print('Go to Back', lol.get_context())
-# print('-'*50)
-# lol.get_page_view('Back')
-# print('Go to Back', lol.get_context())
-# print('-'*50)
 
 scanery = ({'start_page': ({'category_page': ({'category1':
                                                    ({'good1': None}, {'good2': None}, {'good3': None})},

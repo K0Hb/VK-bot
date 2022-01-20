@@ -38,14 +38,14 @@ def get_goods(category, connection=connection):
     return result
 
 
-def get_price_good(name, connection=connection):
+def get_info_good(name, connection=connection):
     with connection.cursor() as cursor:
         connection.ping()
         cursor.execute(f"SELECT * FROM goods WHERE name = '{name}'")
         result = cursor.fetchall()
         connection.commit()
         connection.close()
-    return result
+    return result[0]
 
 def get_category_photo(category_name, connection=connection):
     with connection.cursor() as cursor:

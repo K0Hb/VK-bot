@@ -4,7 +4,7 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 import os
 from dotenv import load_dotenv
-from request_db import get_category, get_goods, get_price_good
+from request_db import get_category, get_goods, get_info_good
 
 load_dotenv()
 GROUP_ID = os.getenv('GROUP_ID')
@@ -75,12 +75,12 @@ def goods_page(event, vk, name=None, last_photo=None):
 
 def good_page(event, vk, name=None, last_photo=None):
     photo = event.obj['payload'].get('photo')
-    get_db_info = get_price_good(name)
+    get_db_info = get_info_good(name)
     vk.messages.edit(
         peer_id=event.obj.peer_id,
-        message=f"Описание:  {get_db_info[0]['discription']}",
+        message=f"Описание:  {get_db_info['discription']}",
         conversation_message_id=event.obj.conversation_message_id,
-        keyboard=(generate_keyboard(get_db_info,
+        keyboard=(generate_keyboard([get_db_info],
                                     'good_page',
                                     butt_back=True,
                                     photo=photo)).get_keyboard(),
