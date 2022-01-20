@@ -7,6 +7,7 @@ ______
 * v2 логирока реализована в машине состояний (FSM)
 ______
 Данные хранятся в БД:
+
 ![Bot gif](presentation/BD_presentation.png)
 ______
 ![Bot gif](presentation/vk-bot-gif.gif)
