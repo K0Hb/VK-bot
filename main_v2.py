@@ -14,7 +14,7 @@ API_VERSION = os.getenv('API_VERSION')
 
 
 def generate_keyboard(get_db_info, butt_back=False):
-    keyboard = VkKeyboard(one_time=False, inline=True)
+    keyboard = VkKeyboard(one_time=True, inline=False)
     for item in get_db_info:
         keyboard.add_button(
             label=item,
