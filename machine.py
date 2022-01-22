@@ -79,14 +79,14 @@ class СonditionMachine():
         self.good_price = good['price']
 
     def create_basket_list(self):
-        result_str = ''
+        result_str = 'Ваши товары: \n'
         for good in self.basket:
             result_str += f"good:{good['good']}, price{good['price']}\n"
         return result_str
 
     def view_basket(self):
         self.add_butt_back = True
-        self.page_photo = '457239032'
+        self.page_photo = None #'457239032'
         self.actual_page = 'view_basket'
         self.page_discription = self.create_basket_list()
         self.page_back_condition = self.actual_page
