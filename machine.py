@@ -1,3 +1,4 @@
+from unittest import result
 from request_db import get_category, get_goods,\
     get_info_good, get_category_photo
 
@@ -15,6 +16,7 @@ class СonditionMachine():
         self.state_stack = []
         self.basket = []
         self.add_butt_basket = False
+        self.good_price = None
 
     def get_context(self):
         context = {
@@ -26,7 +28,8 @@ class СonditionMachine():
             'state_stack': self.state_stack,
             'discription': self.page_discription,
             'add_butt_back': self.add_butt_back,
-            'add_butt_basket': self.add_butt_basket
+            'add_butt_basket': self.add_butt_basket,
+            'price' : self.good_price
         }
         return context
 
@@ -49,7 +52,7 @@ class СonditionMachine():
         self.level_page = 2
         self.state_stack.append(self.actual_page)
         self.add_butt_basket = False
-        self.add_butt_back = True
+        self.add_butt_back = False
 
     def goods_page(self, category_name):
         self.page_butt_name =\
@@ -68,11 +71,25 @@ class СonditionMachine():
         good = get_info_good(good_name)
         self.page_photo = good['photo']
         self.page_back_condition = self.actual_page
-        self.page_discription = f"Discription: {good['discription']}, price: {good['price']}"
+        self.page_discription = f"- discription: {good['discription']}, price: {good['price']}"
         self.actual_page = good_name
         self.level_page = 4
         self.state_stack.append(self.actual_page)
         self.add_butt_back = True
+        self.good_price = good['price']
+
+    def create_basket_list(self):
+        result_str = ''
+        for good in self.basket:
+            result_str += f"good:{good['good']}, price{good['price']}\n"
+        return result_str
+
+    def view_basket(self):
+        self.add_butt_back = True
+        self.page_photo = '457239032'
+        self.actual_page = 'view_basket'
+        self.page_discription = self.create_basket_list()
+        self.page_back_condition = self.actual_page
 
     def go_back(self):
         self.state_stack.pop()
@@ -82,11 +99,16 @@ class СonditionMachine():
     def get_page_view(self, status):
         level_page = len(self.state_stack)
         if status == 'Back':
+            print('Back')
             self.go_back()
         elif status == 'add in basket':
-            self.basket.append(self.state_stack[-1])
-            print(self.state_stack)
+            print('add in basket')
+            self.basket.append({'good': self.state_stack[-1],
+                                'price': self.good_price})
             pass
+        elif status == 'view basket':
+            print('view basket')
+            self.view_basket()
         elif level_page == 0:
             print('start start_page')
             self.start_page()

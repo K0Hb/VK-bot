@@ -76,7 +76,7 @@ def main():
     vk = vk_session.get_api()
     longpoll = VkBotLongPoll(vk_session, group_id=GROUP_ID)
     user = СonditionMachine()
-    all_valid_name = get_all_name() + ['Back', 'Выбор категорий', 'add in basket']
+    all_valid_name = get_all_name() + ['Back', 'Выбор категорий', 'add in basket', 'view basket']
     for event in longpoll.listen():
         if event.type == VkBotEventType.MESSAGE_NEW:
             message = event.obj.message["text"]
