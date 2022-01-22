@@ -13,7 +13,7 @@ GROUP_TOKEN = os.getenv('SECRET_KEY')
 API_VERSION = os.getenv('API_VERSION')
 
 
-def generate_keyboard(get_db_info, butt_back=False):
+def generate_keyboard(get_db_info, add_butt=None):
     keyboard = VkKeyboard(one_time=True, inline=False)
     for item in get_db_info:
         keyboard.add_button(
@@ -21,11 +21,24 @@ def generate_keyboard(get_db_info, butt_back=False):
             color=VkKeyboardColor.POSITIVE,
             payload={"type": 'click'}
         )
-    if butt_back:
-        keyboard.add_button(
-            "Back",
-            color=VkKeyboardColor.NEGATIVE,
-            payload={"type": "back"},
+    if add_butt:
+        if add_butt['add_butt_back']:
+            keyboard.add_button(
+                "Back",
+                color=VkKeyboardColor.NEGATIVE,
+                payload={"type": "back"},
+            )
+        elif add_butt['add_butt_basket']:
+            keyboard.add_button(
+                "add in basket",
+                color=VkKeyboardColor.PRIMARY,
+                payload={"type": "add_butt_basket"},
+            )
+    keyboard.add_line()
+    keyboard.add_button(
+            label='view basket',
+            color=VkKeyboardColor.PRIMARY,
+            payload={"type": 'click'}
         )
     return keyboard
 
@@ -36,15 +49,13 @@ def start_page_send(event, vk, condition):
         user_id=event.obj.message["from_id"],
         random_id=get_random_id(),
         peer_id=event.obj.message["from_id"],
-        keyboard=generate_keyboard(['Выбор категорий']).get_keyboard(),
+        keyboard=generate_keyboard(['Выбор категорий'], None).get_keyboard(),
         attachment=f'photo-{GROUP_ID}_{photo}',
         message="Добро пожаловать !",
     )
 
 
 def page_view(event, vk, condition, butt_back=False):
-    if len(condition['state_stack']) > 1:
-        butt_back = True
     photo = condition['page_photo']
     discription = 'Бот-пекарня'
     if condition['discription'] is not None:
@@ -54,7 +65,7 @@ def page_view(event, vk, condition, butt_back=False):
         random_id=get_random_id(),
         peer_id=event.obj.message["from_id"],
         keyboard=generate_keyboard(condition['page_butt_name'],
-                                   butt_back).get_keyboard(),
+                                   condition).get_keyboard(),
         attachment=f'photo-{GROUP_ID}_{photo}',
         message=discription
     )
@@ -65,7 +76,7 @@ def main():
     vk = vk_session.get_api()
     longpoll = VkBotLongPoll(vk_session, group_id=GROUP_ID)
     user = СonditionMachine()
-    all_valid_name = get_all_name() + ['Back', 'Выбор категорий']
+    all_valid_name = get_all_name() + ['Back', 'Выбор категорий', 'add in basket']
     for event in longpoll.listen():
         if event.type == VkBotEventType.MESSAGE_NEW:
             message = event.obj.message["text"]

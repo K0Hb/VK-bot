@@ -13,6 +13,8 @@ class СonditionMachine():
         self.level_page = None
         self.user_id = None
         self.state_stack = []
+        self.basket = []
+        self.add_butt_basket = False
 
     def get_context(self):
         context = {
@@ -22,7 +24,9 @@ class СonditionMachine():
             'page_back_condition': self.page_back_condition,
             'level_page':  self.level_page,
             'state_stack': self.state_stack,
-            'discription': self.page_discription
+            'discription': self.page_discription,
+            'add_butt_back': self.add_butt_back,
+            'add_butt_basket': self.add_butt_basket
         }
         return context
 
@@ -33,6 +37,8 @@ class СonditionMachine():
         self.page_discription = None
         self.level_page = 1
         self.state_stack.append(self.actual_page)
+        self.add_butt_basket = False
+        self.add_butt_back = False
 
     def categories_page(self):
         self.page_butt_name = [category['name'] for category in get_category()]
@@ -42,6 +48,8 @@ class СonditionMachine():
         self.actual_page = 'category_page'
         self.level_page = 2
         self.state_stack.append(self.actual_page)
+        self.add_butt_basket = False
+        self.add_butt_back = True
 
     def goods_page(self, category_name):
         self.page_butt_name =\
@@ -52,16 +60,19 @@ class СonditionMachine():
         self.actual_page = category_name
         self.level_page = 3
         self.state_stack.append(self.actual_page)
+        self.add_butt_basket = False
+        self.add_butt_back = True
 
     def good_page(self, good_name):
-        self.page_butt_name = []
+        self.page_butt_name = ['add in basket']
         good = get_info_good(good_name)
         self.page_photo = good['photo']
         self.page_back_condition = self.actual_page
-        self.page_discription = good['discription']
+        self.page_discription = f"Discription: {good['discription']}, price: {good['price']}"
         self.actual_page = good_name
         self.level_page = 4
         self.state_stack.append(self.actual_page)
+        self.add_butt_back = True
 
     def go_back(self):
         self.state_stack.pop()
@@ -72,6 +83,10 @@ class СonditionMachine():
         level_page = len(self.state_stack)
         if status == 'Back':
             self.go_back()
+        elif status == 'add in basket':
+            self.basket.append(self.state_stack[-1])
+            print(self.state_stack)
+            pass
         elif level_page == 0:
             print('start start_page')
             self.start_page()
