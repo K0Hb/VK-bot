@@ -85,6 +85,7 @@ class СonditionMachine():
         return result_str
 
     def view_basket(self):
+        self.page_butt_name = []
         self.add_butt_back = True
         self.page_photo = None #'457239032'
         self.actual_page = 'view_basket'
