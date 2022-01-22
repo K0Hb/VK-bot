@@ -80,8 +80,8 @@ class СonditionMachine():
 
     def create_basket_list(self):
         result_str = 'Ваши товары: \n'
-        for good in self.basket:
-            result_str += f"good:{good['good']}, price{good['price']}\n"
+        for num , good in enumerate(self.basket):
+            result_str += f"good {num} :{good['good']}, price{good['price']}\n"
         return result_str
 
     def view_basket(self):
